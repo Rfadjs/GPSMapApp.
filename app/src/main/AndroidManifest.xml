@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permisos de ubicación -->
+    <!-- Autorizaciones necesarias para obtener la ubicación del dispositivo -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -17,14 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GPSMapApp">
 
-        <!-- Clave de API de Google Maps -->
+        <!-- Llave de acceso para el uso de los servicios de Google Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCCPlVUjkJcjQtziOTuGEaoMBTi1CNGEhE" />
 
-        <!-- Actividades -->
+        <!-- Declaración de las pantallas (actividades) que usa la aplicación -->
         <activity android:name=".Ubicacion" android:exported="true" />
         <activity android:name=".Mapa" android:exported="true" />
+
+        <!-- Actividad principal: se inicia al abrir la aplicación -->
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

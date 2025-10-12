@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -32,34 +31,34 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Botón para mostrar la ubicación actual
+        // Botón que abre la pantalla con la ubicación actual del usuario
         buttonMostrarUbicacion = findViewById(R.id.button);
         buttonMostrarUbicacion.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, Mapa.class);
             startActivity(intent);
         });
 
-        // Botón para mostrar el mapa con ubicación predefinida
+        // Botón que dirige al mapa con una localización establecida previamente
         buttonGoogleMap = findViewById(R.id.button2);
         buttonGoogleMap.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, Ubicacion.class);
             startActivity(intent);
         });
 
-        // Botón y ImageView para descargar imagen
+        // Elementos para obtener y mostrar una imagen descargada desde la web
         buttonDescargarImagen = findViewById(R.id.buttonDescargarImagen);
         imageView = findViewById(R.id.imageView);
 
         buttonDescargarImagen.setOnClickListener(v -> {
             String urlImagen = "https://static.vecteezy.com/system/resources/thumbnails/034/928/042/small_2x/ai-generated-cat-clip-art-free-png.png";
 
-            // Hilo secundario para descargar la imagen
+            // Se ejecuta un hilo en segundo plano para realizar la descarga sin afectar la interfaz
             new Thread(() -> {
                 try {
                     java.net.URL url = new java.net.URL(urlImagen);
                     final Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                    // Actualizar ImageView en el hilo principal
+                    // La imagen descargada se muestra en el ImageView desde el hilo principal
                     runOnUiThread(() -> imageView.setImageBitmap(bitmap));
 
                 } catch (Exception e) {

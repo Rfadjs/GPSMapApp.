@@ -40,6 +40,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // 🔹 Librería necesaria para integrar y mostrar Google Maps dentro de la app
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    // 🔹 Librería que permite acceder a la ubicación del dispositivo (GPS, red, Wi-Fi)
+    //     Se utiliza junto con FusedLocationProviderClient para obtener la ubicación actual
     implementation("com.google.android.gms:play-services-location:21.0.1")
 }
