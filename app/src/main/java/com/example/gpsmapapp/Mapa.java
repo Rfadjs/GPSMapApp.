@@ -119,7 +119,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            // Si el usuario otorgó el permiso, se habilita la ubicación inmediatamente (si el mapa ya está listo)
+            // Si el usuarió otorgó el permiso, se habilita la ubicación inmediatamente (si el mapa ya está listo)
             if (mMap != null) {
                 enableUserLocation();
             } else {
