@@ -14,50 +14,61 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Ubicacion extends AppCompatActivity implements OnMapReadyCallback {
 
+    // ======================= Estado =======================
     private GoogleMap mMap;
 
+    // ================== Ciclo de vida =====================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ubicacion);
 
-        // Se llama al metodo que configura y prepara el mapa
-        inicializarMapa();
+        initMapFragment(); // Configura y prepara el mapa
     }
 
-    // Metodo que obtiene el fragmento del mapa desde el layout y lo prepara
-    private void inicializarMapa() {
+    // =================== Inicialización ===================
+    /**
+     * Obtiene el fragmento del mapa desde el layout y lo prepara
+     * para ser cargado de forma asíncrona.
+     */
+    private void initMapFragment() {
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.map_fragment_lugar);
 
-        // Si el fragmento del mapa existe, se carga de forma asíncrona
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
     }
 
+    // ================== Callback del mapa =================
+    /**
+     * Método invocado automáticamente cuando el mapa está listo para su uso.
+     * Aquí se configura el marcador y el enfoque de cámara.
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Llamada al metodo que coloca el marcador y centra la vista
-        mostrarUbicacionSantoTomas();
+        showSantoTomasLocation(); // Muestra el marcador y centra la vista
     }
 
-    // Metodo separado para crear y mostrar la ubicación con marcador y zoom
-    private void mostrarUbicacionSantoTomas() {
+    // =================== Lógica del mapa ==================
+    /**
+     * Crea y muestra la ubicación de Santo Tomás – Ovalle en el mapa
+     * con un marcador y un nivel de zoom apropiado.
+     */
+    private void showSantoTomasLocation() {
         // Coordenadas de Santo Tomás - Ovalle
-        LatLng lugar = new LatLng(-30.60465, -71.20476);
+        LatLng santoTomasOvalle = new LatLng(-30.60465, -71.20476);
 
-        // Se añade un marcador en el punto seleccionado
+        // Agrega un marcador en la posición indicada
         mMap.addMarker(new MarkerOptions()
-                .position(lugar)
+                .position(santoTomasOvalle)
                 .title("Santo Tomás - Ovalle"));
 
-        // Se centra la cámara en el marcador y se ajusta el nivel de zoom
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lugar, 18));
+        // Centra la cámara y ajusta el zoom
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(santoTomasOvalle, 18));
 
-        // Se establece el tipo de mapa en modo híbrido (satélite + etiquetas)
+        // Configura el tipo de mapa en modo híbrido (satélite + etiquetas)
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
     }
 }

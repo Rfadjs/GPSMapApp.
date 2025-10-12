@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -14,57 +15,81 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button buttonMostrarUbicacion;
-    Button buttonGoogleMap;
-    Button buttonDescargarImagen;
-    ImageView imageView;
+    // region UI
+    private Button buttonMostrarUbicacion;
+    private Button buttonGoogleMap;
+    private Button buttonDescargarImagen;
+    private ImageView imageView;
+    // endregion
 
+    // region Constantes
+    private static final String IMAGE_URL =
+            "https://static.vecteezy.com/system/resources/thumbnails/034/928/042/small_2x/ai-generated-cat-clip-art-free-png.png";
+    // endregion
+
+    // region Ciclo de vida
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        setupEdgeToEdge();
         setContentView(R.layout.activity_main);
 
+        initViews();
+        setupInsetsPadding();
+        setupClickListeners();
+    }
+    // endregion
+
+    // region Setup
+    private void setupEdgeToEdge() {
+        EdgeToEdge.enable(this);
+    }
+
+    private void initViews() {
+        buttonMostrarUbicacion = findViewById(R.id.button);
+        buttonGoogleMap = findViewById(R.id.button2);
+        buttonDescargarImagen = findViewById(R.id.buttonDescargarImagen);
+        imageView = findViewById(R.id.imageView);
+    }
+
+    private void setupInsetsPadding() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        // Botón que abre la pantalla con la ubicación actual del usuario
-        buttonMostrarUbicacion = findViewById(R.id.button);
-        buttonMostrarUbicacion.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Mapa.class);
-            startActivity(intent);
-        });
-
-        // Botón que dirige al mapa con una localización establecida previamente
-        buttonGoogleMap = findViewById(R.id.button2);
-        buttonGoogleMap.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Ubicacion.class);
-            startActivity(intent);
-        });
-
-        // Elementos para obtener y mostrar una imagen descargada desde la web
-        buttonDescargarImagen = findViewById(R.id.buttonDescargarImagen);
-        imageView = findViewById(R.id.imageView);
-
-        buttonDescargarImagen.setOnClickListener(v -> {
-            String urlImagen = "https://static.vecteezy.com/system/resources/thumbnails/034/928/042/small_2x/ai-generated-cat-clip-art-free-png.png";
-
-            // Se ejecuta un hilo en segundo plano para realizar la descarga sin afectar la interfaz
-            new Thread(() -> {
-                try {
-                    java.net.URL url = new java.net.URL(urlImagen);
-                    final Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                    // La imagen descargada se muestra en el ImageView desde el hilo principal
-                    runOnUiThread(() -> imageView.setImageBitmap(bitmap));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        });
     }
+
+    private void setupClickListeners() {
+        // Abrir pantalla con la ubicación actual
+        buttonMostrarUbicacion.setOnClickListener(v -> open(Mapa.class));
+
+        // Abrir mapa con ubicación predefinida
+        buttonGoogleMap.setOnClickListener(v -> open(Ubicacion.class));
+
+        // Descargar y mostrar imagen desde la web
+        buttonDescargarImagen.setOnClickListener(v -> downloadImageFromUrl(IMAGE_URL));
+    }
+    // endregion
+
+    // region Navegación
+    private void open(Class<?> activity) {
+        startActivity(new Intent(MainActivity.this, activity));
+    }
+    // endregion
+
+    // region Red / Imagen
+    private void downloadImageFromUrl(String urlString) {
+        new Thread(() -> {
+            try {
+                java.net.URL url = new java.net.URL(urlString);
+                // Nota: se mantiene la descarga simple para no bloquear la UI; se actualiza en el hilo principal
+                final Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                runOnUiThread(() -> imageView.setImageBitmap(bitmap));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    // endregion
 }
