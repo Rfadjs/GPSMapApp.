@@ -33,5 +33,3 @@ Mostrar Ubicación → Muestra tu ubicación actual.
 Google Map → Muestra marcador en ubicación predefinida.
 
 Descargar Imagen → Descarga y muestra una imagen desde URL.
-
-Cambiar Tema → Alterna entre modo claro y oscuro.
