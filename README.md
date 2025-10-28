@@ -11,5 +11,5 @@ Este repositorio contiene el análisis de seguridad realizado con **Mobile Secur
 
 ## 🧑‍💻 Elaborado por
 **Francisco Valdivia**  
-**Programacion android** IEI-093 - Seguridad en Aplicaciones  
+**Programacion android**  
 **26-10-2025** Octubre 2025
