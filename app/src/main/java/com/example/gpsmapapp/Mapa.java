@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
-    // ===================== Constantes =====================
+    //===================== Constantes =====================
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     // ======================= Estado =======================
