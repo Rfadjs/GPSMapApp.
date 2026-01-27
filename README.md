@@ -1,34 +1,15 @@
-Evaluación Semana 8
+# 📱 Análisis de Seguridad GPSMapApp
 
-GPSMapApp es una aplicación Android para visualizar y trabajar con funcionalidades de ubicación y contenido dinámico.
+Este repositorio contiene el análisis de seguridad realizado con **Mobile Security Framework (MobSF)** a la aplicación **GPSMapApp (versión 1.0)**.
 
-🧭 Funcionalidades principales Actual – Mostrar tu ubicación actual en Google Maps. En emulador se simula la ubicación por el uso del emulador; en el dispositivo personal se usa la ubicación en tiempo real.
+## 📋 Contenido
+- [Vulnerabilidades](vulnerabilities.md)
+- [Buenas prácticas](best_practices.md)
+- [Consejos de seguridad](security_tips.md)
+- [Programa de mejora continua](security_improvement_program.md)
+- [Informe completo MobSF](mobsf_report.pdf)
 
-Predefinida – mostrar marcador en el dispositivo Dispositivo – marcador apuntando al Santo Tomás de Ovalle
-
-Descargar imagen desde url – en la pantalla principal disponer un botón que permita descargar una imagen desde internet y mostrarla en el ImageView.
-
-⚙️ Requisitos para su uso Android Studio instalado
-
-Dispositivo físico o emulador configurado (preferiblemente físico para probar ubicación real)
-
-API Key de Google Maps
-
-Conexión a internet para descargar la imagen
-
-🚀 Cómo ejecutar la app Clonar el repositorio y abrir en Android Studio
-Agrega tu API Key de Google Maps en res/values/strings.xml. Asegúrate de que esté correctamente referenciada en el AndroidManifest.xml.
-
-Ejecuta la app en tu dispositivo o emulador.
-
-Prueba las funcionalidades:
-
-Mostrar Ubicación → Muestra tu ubicación actual.
-
-Google Map → Muestra marcador en ubicación predefinida.
-
-Descargar Imagen → Descarga y muestra una imagen desde URL.
-
-Google map → verás un marcador en la ubicación predefinida
-
-Descargar imagen → descargar y mostrar una imagen con URL.
+## 🧑‍💻 Elaborado por
+**Francisco Valdivia**  
+**Programacion android**  
+**26-10-2025** Octubre 2025
