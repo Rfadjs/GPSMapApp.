@@ -1,14 +1,20 @@
 package com.example.gpsmapapp;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -16,18 +22,14 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity {
 
     // region UI
-    private Button buttonMostrarUbicacion;
-    private Button buttonGoogleMap;
-    private Button buttonDescargarImagen;
+    private Button buttonVerMapa;
+    private Button buttonDetenerRastreo;
+    private SwitchCompat switchRastreo;
     private ImageView imageView;
     // endregion
 
-    // region Constantes
-    private static final String IMAGE_URL =
-            "https://static.vecteezy.com/system/resources/thumbnails/034/928/042/small_2x/ai-generated-cat-clip-art-free-png.png";
-    // endregion
+    private static final int REQUEST_CODE_LOCATION = 100;
 
-    // region Ciclo de vida
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,17 +40,16 @@ public class MainActivity extends AppCompatActivity {
         setupInsetsPadding();
         setupClickListeners();
     }
-    // endregion
 
-    // region Setup
     private void setupEdgeToEdge() {
         EdgeToEdge.enable(this);
     }
 
     private void initViews() {
-        buttonMostrarUbicacion = findViewById(R.id.button);
-        buttonGoogleMap = findViewById(R.id.button2);
-        buttonDescargarImagen = findViewById(R.id.buttonDescargarImagen);
+        // Enlazamos solo los elementos que quedaron en tu XML final
+        buttonVerMapa = findViewById(R.id.button2);
+        buttonDetenerRastreo = findViewById(R.id.buttonDetener);
+        switchRastreo = findViewById(R.id.switchRastreo);
         imageView = findViewById(R.id.imageView);
     }
 
@@ -61,35 +62,68 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        // Abrir pantalla con la ubicación actual
-        buttonMostrarUbicacion.setOnClickListener(v -> open(Mapa.class));
+        // Lógica del Switch: Ideal para el celular de la persona rastreada
+        switchRastreo.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                verificarPermisosYComenzar();
+            } else {
+                detenerServicioRastreo();
+            }
+        });
 
-        // Abrir mapa con ubicación predefinida
-        buttonGoogleMap.setOnClickListener(v -> open(Ubicacion.class));
+        // Botón para ir al Mapa: Ideal para el celular del familiar que vigila
+        buttonVerMapa.setOnClickListener(v -> open(Mapa.class));
 
-        // Descargar y mostrar imagen desde la web
-        buttonDescargarImagen.setOnClickListener(v -> downloadImageFromUrl(IMAGE_URL));
+        // Botón para detener todo manualmente
+        buttonDetenerRastreo.setOnClickListener(v -> {
+            detenerServicioRastreo();
+            switchRastreo.setChecked(false); // Apaga el switch visualmente
+        });
     }
-    // endregion
 
-    // region Navegación
+    // ================= LÓGICA DE SERVICIO =================
+
+    private void verificarPermisosYComenzar() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            iniciarServicioRastreo();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION);
+        }
+    }
+
+    private void iniciarServicioRastreo() {
+        Intent serviceIntent = new Intent(this, UbicacionService.class);
+        // Como tu proyecto ya requiere SDK >= 26, usamos directamente startForegroundService
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+        Toast.makeText(this, "Compartiendo ubicación en tiempo real", Toast.LENGTH_SHORT).show();
+    }
+
+    private void detenerServicioRastreo() {
+        Intent serviceIntent = new Intent(this, UbicacionService.class);
+        stopService(serviceIntent);
+        Toast.makeText(this, "Rastreo detenido", Toast.LENGTH_SHORT).show();
+    }
+
+    // ================= OTROS MÉTODOS =================
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarServicioRastreo();
+            } else {
+                switchRastreo.setChecked(false); // Si no da permiso, apagamos el switch
+                Toast.makeText(this, "Se requiere permiso de GPS para rastrear", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private void open(Class<?> activity) {
         startActivity(new Intent(MainActivity.this, activity));
     }
-    // endregion
-
-    // region Red / Imagen
-    private void downloadImageFromUrl(String urlString) {
-        new Thread(() -> {
-            try {
-                java.net.URL url = new java.net.URL(urlString);
-                // Nota: se mantiene la descarga simple para no bloquear la UI; se actualiza en el hilo principal
-                final Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                runOnUiThread(() -> imageView.setImageBitmap(bitmap));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-    // endregion
 }

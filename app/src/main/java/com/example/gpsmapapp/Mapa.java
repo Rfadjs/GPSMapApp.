@@ -10,43 +10,42 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+// NUEVAS IMPORTACIONES PARA FIREBASE
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
-    //===================== Constantes =====================
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
-    // ======================= Estado =======================
     private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationClient;
 
-    // ================== Ciclo de vida =====================
+    // VARIABLES PARA RASTREO EN TIEMPO REAL
+    private DatabaseReference databaseReference;
+    private Marker markerHija;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
-        initLocationClient();
+        // Inicializamos la conexión a Firebase
+        databaseReference = FirebaseDatabase.getInstance().getReference("ubicaciones/hija1");
+
         initMapFragment();
     }
 
-    // ===================== Inicialización =================
-    /** Instancia el cliente de ubicación unificada (GPS/Wi-Fi/red). */
-    private void initLocationClient() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-    }
-
-    /** Obtiene el fragmento de mapa del layout y registra el callback. */
     private void initMapFragment() {
+        // Asegúrate de que en activity_mapa.xml el ID sea map_fragment
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mapFragment != null) {
@@ -54,83 +53,68 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    // =================== Callback del mapa =================
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        setupTapToAddMarker();          // interacción del usuario
-        checkOrRequestLocationPermission(); // habilita ubicación si hay permiso
+        // Verificamos permisos para que el familiar también vea su propia ubi (opcional)
+        checkOrRequestLocationPermission();
+
+        // ACTIVAMOS EL ESCUCHADOR DE TIEMPO REAL
+        iniciarRastreoFamiliar();
     }
 
-    // =================== Permisos & ubicación ==============
-    /** Verifica ACCESS_FINE_LOCATION y lo solicita si falta. */
-    private void checkOrRequestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE
-            );
-        } else {
-            enableUserLocation(); // Permiso concedido previamente
-        }
-    }
+    private void iniciarRastreoFamiliar() {
+        // Este método escucha a Firebase perpetuamente mientras la pantalla esté abierta
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Extraemos los datos que el UbicacionService está subiendo
+                    Double lat = dataSnapshot.child("latitud").getValue(Double.class);
+                    Double lng = dataSnapshot.child("longitud").getValue(Double.class);
 
-    /** Activa "Mi ubicación" y centra la cámara si se obtiene la posición. */
-    private void enableUserLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && mMap != null) {
+                    if (lat != null && lng != null) {
+                        LatLng ubiHija = new LatLng(lat, lng);
 
-            mMap.setMyLocationEnabled(true);
+                        if (markerHija == null) {
+                            // Si el marcador no existe, lo creamos
+                            markerHija = mMap.addMarker(new MarkerOptions()
+                                    .position(ubiHija)
+                                    .title("Ubicación de mi hija"));
 
-            // Lectura puntual con la mayor precisión disponible
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                    .addOnSuccessListener(this, location -> {
-                        if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
-
-                            // Enfoca la cámara y añade un marcador informativo
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15f));
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(current)
-                                    .title("Mi ubicación actual"));
+                            // Movemos la cámara a ella la primera vez
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ubiHija, 15f));
                         } else {
-                            Toast.makeText(this, "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show();
+                            // Si ya existe, solo actualizamos su posición suavemente
+                            markerHija.setPosition(ubiHija);
                         }
-                    });
-        }
-    }
+                    }
+                }
+            }
 
-    // ================== Interacción con el mapa ============
-    /** Al tocar el mapa, agrega un marcador en ese punto. */
-    private void setupTapToAddMarker() {
-        if (mMap == null) return;
-        mMap.setOnMapClickListener(latLng -> {
-            mMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .title("Marcador personalizado"));
-            Toast.makeText(this, "Marcador añadido", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(Mapa.this, "Error de conexión: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    // ============== Resultado del diálogo de permisos ======
+    private void checkOrRequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            if (mMap != null) mMap.setMyLocationEnabled(true);
+        }
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE
-                && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            // Si el permiso fue otorgado, habilita la ubicación (si el mapa ya está listo)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
-                enableUserLocation();
-            } else {
-                // Caso raro: re-inicializa el mapa si aún no estuviera listo
-                initMapFragment();
+                try { mMap.setMyLocationEnabled(true); } catch (SecurityException e) { e.printStackTrace(); }
             }
         }
     }
