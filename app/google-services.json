@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086352155479",
+    "project_id": "gpsfamilia",
+    "storage_bucket": "gpsfamilia.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086352155479:android:d1019129be3fc5ac559412",
+        "android_client_info": {
+          "package_name": "com.example.gpsmapapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH1T3YjYy-nfpUyKtppwrj6oMpqE3o8xQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

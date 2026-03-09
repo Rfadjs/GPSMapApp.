@@ -9,79 +9,78 @@
     android:background="#F5F7FB"
     tools:context=".MainActivity">
 
-    <!-- Título -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sistema de Localización Android"
-        android:textSize="28sp"
+        android:text="Sistema de Localización"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="#0E6E6E"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView" />
+        android:layout_marginTop="10dp" />
 
-
-    <!-- Vista para la imagen descargada -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="20dp"
-        android:scaleType="centerCrop"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:scaleType="centerInside"
         android:adjustViewBounds="true"
         android:background="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/titleText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/buttonGroup" />
+        app:layout_constraintBottom_toTopOf="@+id/switchRastreo" />
 
-    <!-- Grupo de botones -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchRastreo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Compartir mi ubicación "
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:id="@+id/buttonGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mostrar Ubicación"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#1E88E5"
-            android:layout_marginBottom="12dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="10dp">
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Google Map"
+            android:text="VER MAPA DE RASTREO"
             android:textAllCaps="false"
+            android:textSize="16sp"
             android:textColor="#FFFFFF"
             android:backgroundTint="#43A047"
             android:layout_marginBottom="12dp" />
 
         <Button
-            android:id="@+id/buttonDescargarImagen"
+            android:id="@+id/buttonDetener"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Descargar Imagen"
+            android:text="DETENER RASTREO"
             android:textAllCaps="false"
+            android:textSize="16sp"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#FB8C00" />
+            android:backgroundTint="#D32F2F" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
