@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="30dp"
+    android:background="#F5F7FB">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Quién usará la App hoy?"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#0E6E6E"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:id="@+id/btnSoyPadre"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="SOY PADRE / MADRE\n(Ver ubicación)"
+        android:backgroundTint="#43A047"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btnSoyHija"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="SOY HIJA\n(Compartir mi ubicación)"
+        android:backgroundTint="#1E88E5" />
+
+</LinearLayout>

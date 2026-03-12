@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.gpsmapapp"
-    compileSdk = 36
+    compileSdk = 36 // Tienes el último SDK, ¡muy bien!
 
     defaultConfig {
         applicationId = "com.example.gpsmapapp"
@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -42,10 +41,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    // 🔹 Librería necesaria para integrar y mostrar Google Maps dentro de la app
+
+    // 🔹 Google Maps
     implementation("com.google.android.gms:play-services-maps:18.1.0")
 
-    // 🔹 Librería que permite acceder a la ubicación del dispositivo (GPS, red, Wi-Fi)
-    //     Se utiliza junto con FusedLocationProviderClient para obtener la ubicación actual
+    // 🔹 Ubicación (Esta es la que permite lanzar el cartel de "Activar GPS")
     implementation("com.google.android.gms:play-services-location:21.0.1")
 }

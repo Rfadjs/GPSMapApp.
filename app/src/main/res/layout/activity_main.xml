@@ -30,24 +30,10 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-        android:background="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/titleText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/switchRastreo" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switchRastreo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Compartir mi ubicación "
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonGroup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonGroup" />
 
     <LinearLayout
         android:id="@+id/buttonGroup"
@@ -60,27 +46,40 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="10dp">
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchTiempoReal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Modo Tiempo Real (2 seg)"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchModoAhorro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Modo Ahorro (10 seg)"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:layout_marginBottom="16dp" />
+
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="VER MAPA DE RASTREO"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
             android:backgroundTint="#43A047"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="8dp" />
 
         <Button
             android:id="@+id/buttonDetener"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="DETENER RASTREO"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
             android:backgroundTint="#D32F2F" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
